@@ -11,6 +11,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RouterFunctions.nest;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
+import com.laz.rx.client.WebClientAPI;
 import com.laz.rx.handler.ProductHandler;
 import com.laz.rx.model.Product;
 import com.laz.rx.repository.ProductRepository;
@@ -91,6 +92,17 @@ public class RxJavaApplication {
           .thenMany(deleteMono)
           .thenMany(productFlux)
           .thenMany(findAllFlux)
+          .subscribe(System.out::println);
+
+      WebClientAPI api = new WebClientAPI();
+
+      api.postNewProduct()
+          .thenMany(api.getAllProducts())
+          .take(1)
+          .flatMap(p -> api.updateProduct(p.getId(), "White Tea", 0.99))
+          .flatMap(p -> api.deleteProduct(p.getId()))
+          .thenMany(api.getAllProducts())
+          .thenMany(api.getAllEvents())
           .subscribe(System.out::println);
     };
   }

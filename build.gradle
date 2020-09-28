@@ -1,5 +1,5 @@
 plugins {
-  id 'org.springframework.boot' version '2.3.3.RELEASE'
+  id 'org.springframework.boot' version '2.3.4.RELEASE'
   id 'io.spring.dependency-management' version '1.0.10.RELEASE'
   id 'java'
   id 'idea'
@@ -14,10 +14,17 @@ repositories {
 }
 
 dependencies {
-  implementation platform('io.projectreactor:reactor-bom:Bismuth-RELEASE')
-  implementation 'io.projectreactor:reactor-core'
+  implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+  implementation 'org.springframework.boot:spring-boot-starter-webflux'
+  compileOnly 'org.projectlombok:lombok:1.18.12'
+  annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
-  testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+  testCompileOnly 'org.projectlombok:lombok:1.18.12'
+  testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+  testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+  }
+  testImplementation 'io.projectreactor:reactor-test'
 }
 
 test {

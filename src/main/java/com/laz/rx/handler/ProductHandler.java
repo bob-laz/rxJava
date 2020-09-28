@@ -30,7 +30,6 @@ public class ProductHandler {
   }
 
   public Mono<ServerResponse> getProduct(ServerRequest req) {
-    System.out.println("no i got called");
     String id = req.pathVariable("id");
 
     Mono<Product> product = repository.findById(id);
@@ -40,7 +39,7 @@ public class ProductHandler {
             prod ->
                 ServerResponse.ok()
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(fromValue(product)))
+                    .body(fromValue(prod)))
         .switchIfEmpty(ServerResponse.notFound().build());
   }
 

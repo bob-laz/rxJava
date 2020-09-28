@@ -3,10 +3,12 @@ package com.laz.rx.client;
 import com.laz.rx.model.Product;
 import com.laz.rx.model.ProductEvent;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Service
 public class WebClientAPI {
   private final WebClient webClient;
 

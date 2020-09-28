@@ -93,17 +93,6 @@ public class RxJavaApplication {
           .thenMany(productFlux)
           .thenMany(findAllFlux)
           .subscribe(System.out::println);
-
-      WebClientAPI api = new WebClientAPI();
-
-      api.postNewProduct()
-          .thenMany(api.getAllProducts())
-          .take(1)
-          .flatMap(p -> api.updateProduct(p.getId(), "White Tea", 0.99))
-          .flatMap(p -> api.deleteProduct(p.getId()))
-          .thenMany(api.getAllProducts())
-          .thenMany(api.getAllEvents())
-          .subscribe(System.out::println);
     };
   }
 }

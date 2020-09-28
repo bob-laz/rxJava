@@ -1,5 +1,6 @@
 package com.laz.rx.controller;
 
+import com.laz.rx.client.WebClientAPI;
 import com.laz.rx.model.Product;
 import com.laz.rx.model.ProductEvent;
 import com.laz.rx.repository.ProductRepository;
@@ -26,6 +27,7 @@ import reactor.core.publisher.Mono;
 public class ProductController {
 
   private final ProductRepository repository;
+  private final WebClientAPI api;
 
   @GetMapping
   public Flux<Product> getAllProducts() {
@@ -34,7 +36,6 @@ public class ProductController {
 
   @GetMapping("{id}")
   public Mono<ResponseEntity<Product>> getProduct(@PathVariable String id) {
-    System.out.println("I got called");
     return repository
         .findById(id)
         .map(ResponseEntity::ok)
@@ -76,5 +77,15 @@ public class ProductController {
   @GetMapping(value = "/events", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public Flux<ProductEvent> getProductEvents() {
     return Flux.interval(Duration.ofSeconds(1)).map(val -> new ProductEvent(val, "Product Event"));
+  }
+
+  @GetMapping("/api")
+  public Flux<Product> triggerApiCalls() {
+    return api.postNewProduct()
+        .thenMany(api.getAllProducts())
+        .take(1)
+        .flatMap(p -> api.updateProduct(p.getId(), "White Tea", 0.99))
+        .flatMap(p -> api.deleteProduct(p.getId()))
+        .thenMany(api.getAllProducts());
   }
 }
